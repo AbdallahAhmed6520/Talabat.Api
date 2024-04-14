@@ -1,15 +1,28 @@
-﻿using Talabat.Core.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
-
 namespace Talabat.APIs.Controllers
 {
-    public class ProductController : BaseApiController
+    public class ProductsController : BaseApiController
     {
-        private readonly IgenericRepository<Product> _productRepo;
+        private readonly IGenericRepository<Product> _productsRepository;
 
-        public ProductController(IgenericRepository<Product> productRepo)
+        public ProductsController(IGenericRepository<Product> productsRepository)
         {
-            _productRepo = productRepo;
+            _productsRepository = productsRepository;
         }
+
+        // /api/Products
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            var products = await _productsRepository.GetAllAsync();
+
+            return Ok(products);
+        }
+
+
+
     }
 }
