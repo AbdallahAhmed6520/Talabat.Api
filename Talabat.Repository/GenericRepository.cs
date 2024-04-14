@@ -5,7 +5,7 @@ using Talabat.Repository.Data;
 
 namespace Talabat.Repository
 {
-    public class GenericRepository<T> : IgenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly StoreContext _dbContext;
 
@@ -15,6 +15,10 @@ namespace Talabat.Repository
         }
         public async Task<IEnumerable<T>> GetAllAsync()
         {
+            if (typeof(T) == typeof(Product))
+            {
+                return (IEnumerable<T>)await _dbContext.Set<Product>().Include(P => P.Brand).Include(C => C.Category).ToListAsync();
+            }
             return await _dbContext.Set<T>().ToListAsync();
         }
 
