@@ -29,7 +29,7 @@ namespace Talabat.APIs
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            webApplicationBuilder.Services.AddScoped(typeof(IgenericRepository<>),typeof(GenericRepository<>));
             #endregion
 
             using var app = webApplicationBuilder.Build();
