@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIs.Helpers;
-using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
@@ -30,7 +29,7 @@ namespace Talabat.APIs
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             //webApplicationBuilder.Services.AddAutoMapper(m=>m.AddProfile(new MappingProfiles()));
 
@@ -66,7 +65,11 @@ namespace Talabat.APIs
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
 
             //app.UseRouting();
 

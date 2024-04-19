@@ -24,7 +24,7 @@ namespace Talabat.APIs.Controllers
             var spec = new ProductWithBrandAndCategorySpecifications();
 
             var products = await _productsRepository.GetAllWithSpecAsync(spec);
-            var MappedProducts = _mapper.Map<IEnumerable<Product>,IEnumerable<ProductReturnToDTO>>(products);
+            var MappedProducts = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductReturnToDTO>>(products);
 
             return Ok(MappedProducts);
         }
@@ -34,12 +34,14 @@ namespace Talabat.APIs.Controllers
         {
             var spec = new ProductWithBrandAndCategorySpecifications(id);
 
-            var products = await _productsRepository.GetWithSpecAsync(spec);
+            var product = await _productsRepository.GetWithSpecAsync(spec);
 
-            if (products is null)
+            if (product is null)
                 return NotFound(new { Message = "Not Found", StatusCode = 404 }); // 404
 
-            return Ok(products); // 200
+            var MappedProduct = _mapper.Map<Product, ProductReturnToDTO>(product);
+
+            return Ok(MappedProduct); // 200
 
         }
     }
