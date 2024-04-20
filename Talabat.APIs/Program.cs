@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Talabat.Core.Entities;
-using Talabat.Core.Repositories.Contract;
-using Talabat.Repository;
+using Talabat.APIs.Extensions;
+using Talabat.APIs.Middlewares;
 using Talabat.Repository.Data;
 
 namespace Talabat.APIs
@@ -29,7 +28,7 @@ namespace Talabat.APIs
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            webApplicationBuilder.Services.AddApplicationServices();
             #endregion
 
             using var app = webApplicationBuilder.Build();
@@ -57,11 +56,16 @@ namespace Talabat.APIs
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseMiddleware<ExceptionMiddleware>();
+                app.UseSwaggerMiddleware();
             }
 
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
 
             //app.UseRouting();
 
