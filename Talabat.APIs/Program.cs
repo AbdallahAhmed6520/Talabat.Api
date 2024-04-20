@@ -1,10 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Talabat.APIs.Errors;
-using Talabat.APIs.Helpers;
+using Talabat.APIs.Extensions;
 using Talabat.APIs.Middlewares;
-using Talabat.Core.Repositories.Contract;
-using Talabat.Repository;
 using Talabat.Repository.Data;
 
 namespace Talabat.APIs
@@ -32,28 +28,7 @@ namespace Talabat.APIs
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-            //webApplicationBuilder.Services.AddAutoMapper(m=>m.AddProfile(new MappingProfiles()));
-
-            webApplicationBuilder.Services.AddAutoMapper(typeof(MappingProfiles));
-
-            webApplicationBuilder.Services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = (actionContext) =>
-                {
-                    var errors = actionContext.ModelState.Where(p => p.Value.Errors.Count() > 0)
-                                                    .SelectMany(p => p.Value.Errors)
-                                                    .Select(E => E.ErrorMessage)
-                                                    .ToArray();
-
-                    var ValidationErrorResponse = new ApiValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-                    return new BadRequestObjectResult(ValidationErrorResponse);
-                };
-            });
+            webApplicationBuilder.Services.AddApplicationServices();
             #endregion
 
             using var app = webApplicationBuilder.Build();
@@ -82,8 +57,7 @@ namespace Talabat.APIs
             if (app.Environment.IsDevelopment())
             {
                 app.UseMiddleware<ExceptionMiddleware>();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddleware();
             }
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
