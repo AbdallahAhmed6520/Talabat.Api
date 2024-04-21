@@ -23,7 +23,7 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
             this._catRepo = catRepo;
             this._brandRepo = brandRepo;
-        }
+        }   
 
         // /api/Products
         [HttpGet]

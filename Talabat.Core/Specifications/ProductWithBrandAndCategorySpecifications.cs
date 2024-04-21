@@ -28,6 +28,9 @@ namespace Talabat.Core.Specifications
                         break;
                 }
             }
+
+            ApplyPagination(Params.PageSize * (Params.PageIndex - 1), Params.PageSize);
+
         }
 
         public ProductWithBrandAndCategorySpecifications(int id) : base(p => p.Id == id)
