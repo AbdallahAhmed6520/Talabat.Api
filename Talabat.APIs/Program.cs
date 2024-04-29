@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Talabat.APIs.Extensions;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
 
@@ -42,10 +44,13 @@ namespace Talabat.APIs
             //webApplicationBuilder.Services.AddScoped<IgenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
             webApplicationBuilder.Services.AddApplicationServices();
+
+            webApplicationBuilder.Services.AddIdentityServices();
             #endregion
 
             using var app = webApplicationBuilder.Build();
 
+            #region Update Database
             var scope = app.Services.CreateScope();
 
             var services = scope.ServiceProvider;
@@ -60,6 +65,8 @@ namespace Talabat.APIs
 
                 var IdentityDbContext = services.GetRequiredService<AppIdentityDbContext>();
                 await IdentityDbContext.Database.MigrateAsync();
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextSeed.SeedUserAsync(userManager);
 
                 await StoreContextSeed.SeedAsync(_dbcontext); //Apply Seeding
             }
@@ -68,6 +75,8 @@ namespace Talabat.APIs
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "ann error has been occured during apply the migration");
             }
+            #endregion
+
             #region Configure Kestrel Middelewares
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
